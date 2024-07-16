@@ -31,7 +31,6 @@ export interface LoginPayload {
 
 export interface LoginResponse {
     loginStatus: boolean;
-    token?: string;
     error?: string;
 }
 const adminService = emsApiSlice.injectEndpoints({

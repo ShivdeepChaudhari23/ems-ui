@@ -1,11 +1,13 @@
 import { useState } from "react";
+import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { loginFormData } from "../Config/LoginForm";
 import { LoginForm } from "../components";
 import { ILoginFormConfig } from "../types";
 import { LoginPayload, useAdminLoginMutation } from "../services/admin/adminService";
-import { useDispatch } from "react-redux";
 import { setToken } from "../slices/authenticationSlice";
-import { useNavigate } from "react-router-dom";
+
 
 const LoginContainer = () => {
     const navigate = useNavigate();
@@ -23,8 +25,9 @@ const LoginContainer = () => {
                 password: password.value as string,
             } as LoginPayload;
             const data = await adminLogin(payload).unwrap();
-            if (data.loginStatus && data.token) {
-                dispatch(setToken(data.token));
+            if (data.loginStatus) {
+                const token = Cookies.get('token') as string;
+                dispatch(setToken(token));
                 navigate('/employees');
             }
         } catch (e) {
