@@ -23,6 +23,17 @@ interface GetCategoriesAPIResponse {
     status: string;
     result: Category[]
 }
+
+export interface LoginPayload {
+    username: string;
+    password: string;
+}
+
+export interface LoginResponse {
+    loginStatus: boolean;
+    token?: string;
+    error?: string;
+}
 const adminService = emsApiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getAllEmployees: builder.query<GetEmployeesAPIResponse[], void>({
@@ -32,10 +43,20 @@ const adminService = emsApiSlice.injectEndpoints({
         getCategoriesList: builder.query<GetCategoriesAPIResponse[], void>({
             query: () => API_ENDPOINTS.admin.getAllCategories
         }),
+
+        adminLogin: builder.mutation<LoginResponse, LoginPayload>({
+            query: (payload) => ({
+                url: API_ENDPOINTS.admin.adminLogin,
+                method: 'POST',
+                body: payload,
+                credentials: "include",
+            }),
+        }),
     })
 });
 
 export const {
     useGetAllEmployeesQuery,
-    useGetCategoriesListQuery,    
+    useGetCategoriesListQuery, 
+    useAdminLoginMutation,   
 } = adminService;

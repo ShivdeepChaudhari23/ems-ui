@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { ILoginFormConfig } from "../types";
 import { messages } from "../utils/messages";
 import { PasswordInputField, TextInputField } from "../Shared";
@@ -7,9 +7,10 @@ interface ILoginFormProps {
     formConfig: ILoginFormConfig;
     onSubmit: () => void;
     onChange: (key: string, value: string) => void;
+    isLoading: boolean;
 }
 
-const LoginForm = ({ formConfig, onChange }: ILoginFormProps) => {
+const LoginForm = ({ formConfig, onChange, onSubmit, isLoading }: ILoginFormProps) => {
     const { username, password } = formConfig;
     const isSubmitDisabled = !username.value || !password.value;
 
@@ -39,7 +40,15 @@ const LoginForm = ({ formConfig, onChange }: ILoginFormProps) => {
                     />
                 );
             })}
-            <Button variant="contained" className="background-primaryBlue !disabled:background-secondaryBlue w-full" disabled={isSubmitDisabled}>{messages.login}</Button>
+            <Button
+                variant="contained"
+                className="background-primaryBlue !disabled:background-secondaryBlue w-full"
+                disabled={isSubmitDisabled}
+                onClick={() => onSubmit()}
+                
+            >
+                {isLoading ? <CircularProgress /> : messages.login}
+            </Button>
         </div>
     );
 };
