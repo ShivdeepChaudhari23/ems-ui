@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import './App.css';
 import { useGetAllEmployeesQuery } from './services/admin/adminService';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
