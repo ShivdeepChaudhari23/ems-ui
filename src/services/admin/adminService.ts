@@ -33,6 +33,12 @@ export interface LoginResponse {
     loginStatus: boolean;
     error?: string;
 }
+
+export interface ValidateSessionResponse {
+    isSessionValid: boolean;
+    error?: string;
+}
+
 const adminService = emsApiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getAllEmployees: builder.query<GetEmployeesAPIResponse[], void>({
@@ -48,14 +54,18 @@ const adminService = emsApiSlice.injectEndpoints({
                 url: API_ENDPOINTS.admin.adminLogin,
                 method: 'POST',
                 body: payload,
-                credentials: "include",
             }),
         }),
+
+        verifyToken: builder.query<ValidateSessionResponse, void>({
+            query: () => API_ENDPOINTS.admin.verify
+        })
     })
 });
 
 export const {
     useGetAllEmployeesQuery,
     useGetCategoriesListQuery, 
-    useAdminLoginMutation,   
+    useAdminLoginMutation, 
+    useVerifyTokenQuery  
 } = adminService;
