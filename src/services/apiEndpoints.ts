@@ -3,5 +3,6 @@ export const API_ENDPOINTS = {
         getAllEmployees: '/admin/employees',
         getAllCategories: '/admin/categories',
         adminLogin: '/login/admin',
+        verify: '/login/verify',
     }
 }
