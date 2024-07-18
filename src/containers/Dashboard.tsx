@@ -36,7 +36,7 @@ const  Dashboard: React.FC<React.PropsWithChildren> = ({ children }) => {
                                 <Tab
                                     label={item}
                                     onClick={() => handleChangeTab(item)}
-                                    className={`${selectedTab === item ? 'selectedTab' : 'unselectedTab'} !font-bold !text-${selectedTab === item ? 'primaryBlue' : 'tabText'}`}
+                                    className={`${selectedTab === item ? 'selectedTab' : 'unselectedTab'} !font-bold !text-${selectedTab === item ? 'primaryBlue' : 'text'}`}
                                 />
                             );
                         })}

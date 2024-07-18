@@ -42,7 +42,7 @@ const LoginForm = ({ formConfig, onChange, onSubmit, isLoading }: ILoginFormProp
             })}
             <Button
                 variant="contained"
-                className="!bg-primaryBlue !disabled:bg-secondaryBlue w-full"
+                className="!bg-primaryBlue !disabled:bg-secondaryBlue w-full !text-text !font-bold !normal-case"
                 disabled={isSubmitDisabled}
                 onClick={() => onSubmit()}
                 
