@@ -14,14 +14,14 @@ interface GetEmployeesAPIResponse {
     result: Employee[];
 }
 
-interface Category {
+export interface Category {
     id: number;
     name: string;
 }
 
 interface GetCategoriesAPIResponse {
     status: string;
-    result: Category[]
+    results: Category[]
 }
 
 export interface LoginPayload {
@@ -41,11 +41,11 @@ export interface ValidateSessionResponse {
 
 const adminService = emsApiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        getAllEmployees: builder.query<GetEmployeesAPIResponse[], void>({
+        getAllEmployees: builder.query<GetEmployeesAPIResponse, void>({
             query: () => API_ENDPOINTS.admin.getAllEmployees
         }),
 
-        getCategoriesList: builder.query<GetCategoriesAPIResponse[], void>({
+        getCategoriesList: builder.query<GetCategoriesAPIResponse, void>({
             query: () => API_ENDPOINTS.admin.getAllCategories
         }),
 

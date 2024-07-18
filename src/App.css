@@ -33,3 +33,11 @@
 .read-the-docs {
   color: #888;
 }
+
+.selectedTab {
+  background-color: #f9f9f9 !important;
+}
+
+.unselectedTab {
+  background-color: #2a39ab !important;
+}
