@@ -67,5 +67,6 @@ export const {
     useGetAllEmployeesQuery,
     useGetCategoriesListQuery, 
     useAdminLoginMutation, 
-    useVerifyTokenQuery  
+    useVerifyTokenQuery,
+    useLazyVerifyTokenQuery,
 } = adminService;
