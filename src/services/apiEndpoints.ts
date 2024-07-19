@@ -4,5 +4,6 @@ export const API_ENDPOINTS = {
         getAllCategories: '/admin/categories',
         adminLogin: '/login/admin',
         verify: '/login/verify',
+        addCategory: '/admin/add-category',
     }
 }

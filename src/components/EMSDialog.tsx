@@ -6,33 +6,32 @@ import { messages } from "../utils/messages";
 interface EMSDialogProps {
     title: string;
     isDialogOpen: boolean;
-    setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    onDialogClose: () => void;
     showCloseButton?: boolean;
     showCancelButton?: boolean;
     dialogContent: ReactNode,
     onSave: () => void;
+    isLoading: boolean;
 }
 const EMSDialog = ({
     title,
     isDialogOpen,
-    setDialogOpen,
+    onDialogClose,
     showCloseButton = true,
     showCancelButton = true,
     dialogContent,
     onSave,
+    isLoading,
     }: EMSDialogProps) => {
-        const handleClose = () => {
-            setDialogOpen(false);
-        };
 
         return (
             <Dialog
                 open={isDialogOpen}
-                onClose={handleClose}
+                onClose={onDialogClose}
             >
                 <DialogTitle className="flex items-center justify-between">
                     <h3 className="text-[16px] font-bold">{title}</h3>
-                    <div onClick={handleClose}>
+                    <div onClick={onDialogClose}>
                         {showCloseButton && <Close/>}
                     </div>
                 </DialogTitle>
@@ -43,7 +42,7 @@ const EMSDialog = ({
                     {showCancelButton && (
                         <Button
                             variant="outlined"
-                            onClick={handleClose}
+                            onClick={onDialogClose}
                         >
                             {messages.cancel}
                         </Button>
@@ -51,6 +50,7 @@ const EMSDialog = ({
                     <Button
                         variant="contained"
                         onClick={onSave}
+                        disabled={isLoading}
                     >
                         {messages.save}
                     </Button>

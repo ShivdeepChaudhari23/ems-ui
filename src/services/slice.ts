@@ -15,7 +15,9 @@ const emsApiSlice = createApi({
         }
     }),
     endpoints: () => ({}),
-    tagTypes: [],
+    tagTypes: [
+        'categories',
+    ],
 });
 
 export default emsApiSlice;
