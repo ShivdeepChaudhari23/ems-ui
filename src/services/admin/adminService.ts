@@ -17,6 +17,7 @@ interface GetEmployeesAPIResponse {
 export interface Category {
     id: number;
     name: string;
+    description?: string;
 }
 
 interface GetCategoriesAPIResponse {
