@@ -1,7 +1,7 @@
-import { TextField } from "@mui/material";
-import { ITextInputFieldProps } from "../types";
+import { ITextAreaFieldProps } from "../types";
+import { Textarea } from "@mui/joy";
 
-const TextInputField = ({
+const TextAreaField = ({
     value,
     error,
     label,
@@ -9,20 +9,20 @@ const TextInputField = ({
     fieldName,
     onChange,
     errorMessage = ''
-}: ITextInputFieldProps) => {
+}: ITextAreaFieldProps) => {
     return (
     <div className="!mb-8 w-full">
-        <TextField
+        <Textarea
             value={value}
-            error={error}
+            placeholder={label}
             onChange={(e) => onChange(fieldName, e.target.value)}
-            label={label}
             required={required}
-            type=""
+            error={error}
+            minRows={3}
         />
         {error && <p className="!text-errorRed !text-[12px]">{errorMessage}</p>}
     </div>
     );
 };
 
-export default TextInputField;
+export default TextAreaField;

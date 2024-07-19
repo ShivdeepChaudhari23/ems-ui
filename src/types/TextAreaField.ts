@@ -1,4 +1,4 @@
-export interface ITextInputFieldProps {
+export interface ITextAreaFieldProps {
     value: string;
     error: boolean;
     errorMessage?: string;
@@ -6,4 +6,5 @@ export interface ITextInputFieldProps {
     label: string;
     required: boolean;
     fieldName: string;
+    rowNum?: number;
 }

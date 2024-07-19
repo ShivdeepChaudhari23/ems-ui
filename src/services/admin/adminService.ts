@@ -40,6 +40,17 @@ export interface ValidateSessionResponse {
     error?: string;
 }
 
+export interface CreateCategoryPayload {
+    category: string;
+    description? : string;
+}
+
+export interface CreateCategortResponse {
+    message?: string;
+    status?: string;
+    error?: string;
+}
+
 const adminService = emsApiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getAllEmployees: builder.query<GetEmployeesAPIResponse, void>({
@@ -47,7 +58,8 @@ const adminService = emsApiSlice.injectEndpoints({
         }),
 
         getCategoriesList: builder.query<GetCategoriesAPIResponse, void>({
-            query: () => API_ENDPOINTS.admin.getAllCategories
+            query: () => API_ENDPOINTS.admin.getAllCategories,
+            providesTags: ['categories']
         }),
 
         adminLogin: builder.mutation<LoginResponse, LoginPayload>({
@@ -60,7 +72,16 @@ const adminService = emsApiSlice.injectEndpoints({
 
         verifyToken: builder.query<ValidateSessionResponse, void>({
             query: () => API_ENDPOINTS.admin.verify
-        })
+        }),
+
+        addCategory: builder.mutation<CreateCategortResponse, CreateCategoryPayload>({
+            query: (payload) => ({
+                url: API_ENDPOINTS.admin.addCategory,
+                method: 'POST',
+                body: payload,
+            }),
+            invalidatesTags: ['categories'],
+        }),
     })
 });
 
@@ -70,4 +91,5 @@ export const {
     useAdminLoginMutation, 
     useVerifyTokenQuery,
     useLazyVerifyTokenQuery,
+    useAddCategoryMutation,
 } = adminService;

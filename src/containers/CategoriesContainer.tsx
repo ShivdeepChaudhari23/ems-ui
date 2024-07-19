@@ -1,20 +1,68 @@
 import { Button, CircularProgress } from "@mui/material";
 import { messages } from "../utils/messages";
-import { Category, useGetCategoriesListQuery } from "../services/admin/adminService";
+import { Category, useAddCategoryMutation, useGetCategoriesListQuery } from "../services/admin/adminService";
 import { useEffect, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { EMSDialog } from "../components";
+import { ICategoryFormConfig } from "../types";
+import categoryFormData from "../Config/Categories";
+import CategoryFormBuilder from "../components/CategoryFormBuilder";
 
 const CategoriesContainer = () => {
     const { data, isLoading: isLoadingCategories } = useGetCategoriesListQuery();
+    const [addCategory, { isLoading: isAddingCategory }] = useAddCategoryMutation();
+
     const [categoryData, setCategoryData] = useState<Category[]>([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+    const [categoryFormDetails, setCategoryFormDetails] = useState<ICategoryFormConfig>(categoryFormData);
+    
     useEffect(() => {
         if (data?.results) {
             setCategoryData(data.results);
         }
     }, [data, isLoadingCategories]);
+
+    const onChange = (fieldName: string, value: string) => {
+        setCategoryFormDetails((prev) => {
+            const fieldData = prev[fieldName as keyof ICategoryFormConfig];
+            return { ...prev, [fieldName]: { ...fieldData, value, error: false } };
+        })
+    };
+
+    const isFieldsInvalid = () => {
+        const { name } = categoryFormDetails;
+        if (!name.value) {
+            setCategoryFormDetails((prev) => ({ ...prev, name: { ...prev.name, error: true } }));
+            return true;
+        }
+        return false;
+    };
+
+    const onSave = async () => {
+        if (!isFieldsInvalid()) {
+            const { name, description } = categoryFormDetails;
+            try {
+                const payload = {
+                    category: name.value as string,
+                    ...(description.value ? { description: description.value as string } : {}),
+                }
+                const response = await addCategory(payload).unwrap();
+
+                if (response.message) {
+                    // ToDo: Display a toast
+                }
+            } catch (e) {
+                console.log('#### ERROR : %o ', e);
+            } finally {
+                setCategoryFormDetails(categoryFormData);
+                setIsDialogOpen(false);
+            }
+        }
+    };
+    const onDialogClose = () => {
+        setCategoryFormDetails(categoryFormData);
+        setIsDialogOpen(false);
+    };
 
     const categoryColumns: GridColDef[] = [
         { field: 'id', headerName: 'Id', width: 70 },
@@ -53,10 +101,16 @@ const CategoriesContainer = () => {
             </div>
             <EMSDialog
                 isDialogOpen={isDialogOpen}
-                setDialogOpen={setIsDialogOpen}
+                onDialogClose={onDialogClose}
+                isLoading={isAddingCategory}
                 title={messages.createCategory}
-                dialogContent={<p>HEY THERE</p>}
-                onSave={() => null}
+                dialogContent={
+                    <CategoryFormBuilder
+                        formDetails={categoryFormDetails}
+                        onChange={onChange}
+                    />
+                }
+                onSave={onSave}
             />
         </div>
     );
