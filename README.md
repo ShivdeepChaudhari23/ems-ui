@@ -1,3 +1,19 @@
+# About Project
+This project makes easier for the company admins to manage and keep track of the employees within an organisation. This repository holds the frontend code for the application.
+
+It tracks employee details, their roles and categories.
+
+Author: Shivdeep H Chaudhari
+
+Tech Stack (Frontend):
+- React + Typescript + Vite
+- Redux Toolkit
+- Material UI
+- TailwindCSS
+
+# Application Demo Video (As of 19th July 2024) Link:
+- [App Demo](https://drive.google.com/file/d/1k2lFlv_7cNwkfSqM8Srg-WAdORbdgU_r/view?usp=drive_link)
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
