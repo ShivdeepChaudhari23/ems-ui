@@ -10,5 +10,5 @@ export const messages = {
     yes: 'Yes',
     no: 'No',
     confirmation: 'Confirmation',
-    editCategory: 'View/EditCategory',
+    editCategory: 'View/Edit Category',
 };
