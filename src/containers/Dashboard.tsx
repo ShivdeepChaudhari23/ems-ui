@@ -3,13 +3,23 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import { useNavigate } from 'react-router-dom';
 import { Container, Tab, Tabs } from '@mui/material';
+import { useSelector } from 'react-redux';
+import selectAuthentication from '../selectors/authentication';
 
 const pages = ['employees', 'categories', 'roles'];
-// const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const  Dashboard: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const token = useSelector(selectAuthentication).token;
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState('');
+
+   // Check Token Change and Log User out
+  useEffect(() => {
+    if (token === '') {
+      console.log('$$$$ PUSHING TO LOGIN');
+      navigate('/', { replace: true });
+    }
+  }, [token]);
 
   useEffect(() => {
     const currentSegment = window.location.pathname.split('/')[1];
