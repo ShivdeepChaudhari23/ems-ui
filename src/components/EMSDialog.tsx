@@ -12,7 +12,9 @@ interface EMSDialogProps {
     dialogContent: ReactNode,
     onSave: () => void;
     isLoading: boolean;
+    isSaveDisabled: boolean;
 }
+
 const EMSDialog = ({
     title,
     isDialogOpen,
@@ -22,6 +24,7 @@ const EMSDialog = ({
     dialogContent,
     onSave,
     isLoading,
+    isSaveDisabled,
     }: EMSDialogProps) => {
 
         return (
@@ -50,7 +53,7 @@ const EMSDialog = ({
                     <Button
                         variant="contained"
                         onClick={onSave}
-                        disabled={isLoading}
+                        disabled={isLoading || isSaveDisabled}
                     >
                         {messages.save}
                     </Button>

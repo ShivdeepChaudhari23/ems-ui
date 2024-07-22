@@ -4,8 +4,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginFormData } from "../Config/LoginForm";
 import { LoginForm } from "../components";
-import { ILoginFormConfig } from "../types";
-import { LoginPayload, useAdminLoginMutation } from "../services/admin/adminService";
+import { ILoginFormConfig, LoginPayload } from "../types";
+import { useAdminLoginMutation } from "../services";
 import { setToken } from "../slices/authenticationSlice";
 
 
