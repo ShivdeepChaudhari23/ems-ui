@@ -7,4 +7,8 @@ export const messages = {
     createCategory: "Add New Category",
     save: 'Save',
     cancel: 'Cancel',
+    yes: 'Yes',
+    no: 'No',
+    confirmation: 'Confirmation',
+    editCategory: 'View/Edit Category',
 };

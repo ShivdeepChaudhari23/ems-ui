@@ -1,21 +1,30 @@
 import { Button, CircularProgress } from "@mui/material";
 import { messages } from "../utils/messages";
-import { Category, useAddCategoryMutation, useGetCategoriesListQuery } from "../services/admin/adminService";
-import { useEffect, useState } from "react";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { EMSDialog } from "../components";
-import { ICategoryFormConfig } from "../types";
+import { useAddCategoryMutation, useDeleteCategoryMutation, useEditCategoryMutation, useGetCategoriesListQuery } from "../services";
+import { useEffect, useMemo, useState } from "react";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import { EMSAlert, EMSDialog } from "../components";
+import { Category, CreateCategoryPayload, EditCategoryPayload, ICategoryFormConfig } from "../types";
 import categoryFormData from "../Config/Categories";
 import CategoryFormBuilder from "../components/CategoryFormBuilder";
+import { Delete, Edit } from "@mui/icons-material";
 
 const CategoriesContainer = () => {
     const { data, isLoading: isLoadingCategories } = useGetCategoriesListQuery();
     const [addCategory, { isLoading: isAddingCategory }] = useAddCategoryMutation();
+    const [editCategory, { isLoading: isEditingCategory }] = useEditCategoryMutation();
+    const [deleteCategory] = useDeleteCategoryMutation();
 
     const [categoryData, setCategoryData] = useState<Category[]>([]);
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [categoryFormDetails, setCategoryFormDetails] = useState<ICategoryFormConfig>(categoryFormData);
+    const [selectedCategoryData, setSelectedCategoryData] = useState<ICategoryFormConfig>(categoryFormData);
+    const [selectedCategoryId, setSelectedCateogryId] = useState<number>(-9999);
     
+    const [alertMessage, setAlertMessage] = useState('');
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+    const [isEditing, setisEditing] = useState(false);
+
     useEffect(() => {
         if (data?.results) {
             setCategoryData(data.results);
@@ -42,11 +51,21 @@ const CategoriesContainer = () => {
         if (!isFieldsInvalid()) {
             const { name, description } = categoryFormDetails;
             try {
-                const payload = {
-                    category: name.value as string,
-                    ...(description.value ? { description: description.value as string } : {}),
+                let payload = {};
+                if (isEditing) {
+                    payload = {
+                        id: selectedCategoryId,
+                        ...(name.value !== selectedCategoryData.name.value && { name: name.value }),
+                        ...(description.value !== selectedCategoryData.description.value && { description: description.value }),
+                    }
+                } else {
+                    payload = {
+                        category: name.value as string,
+                        ...(description.value ? { description: description.value as string } : {}),
+                    }
                 }
-                const response = await addCategory(payload).unwrap();
+
+                const response = await (isEditing ? editCategory(payload as EditCategoryPayload) : addCategory(payload as CreateCategoryPayload)).unwrap();
 
                 if (response.message) {
                     // ToDo: Display a toast
@@ -56,6 +75,7 @@ const CategoriesContainer = () => {
             } finally {
                 setCategoryFormDetails(categoryFormData);
                 setIsDialogOpen(false);
+                resetData();
             }
         }
     };
@@ -64,7 +84,81 @@ const CategoriesContainer = () => {
         setIsDialogOpen(false);
     };
 
+    const onClickDeleteCategory = (id: number) => {
+        const selectedCategory = categoryData.find((category) => category.id === id) as Category; 
+        const alert = `All the roles and employees associated with this category will also be deleted. Are you sure you want to delete the category ${selectedCategory.name}?`;
+        setSelectedCateogryId(id);
+        setAlertMessage(alert);
+        setShowAlert(true);
+    }
+
+    const handleConfirmClick = async() => {
+        try {
+            const response = await deleteCategory({ categoryId: selectedCategoryId }).unwrap();
+            if (response?.status === 'Success') {
+                // ToDo: Display Success Toast
+            }
+        } catch (e) {
+            // ToDo: Display Error Toast
+            console.log('#### ERROR : %o', e)
+        }
+        setAlertMessage('');
+        setShowAlert(false);
+        resetData();
+    }
+
+    const resetData = () => {
+        setCategoryFormDetails(categoryFormData);
+        setSelectedCateogryId(-9999);
+        setSelectedCategoryData(categoryFormData);
+        setisEditing(false);
+    }
+    const onClickEditCategory = (id: number) => {
+        const selectedCategory = categoryData.find((category) => category.id === id) as Category; 
+        const fieldDetails = {
+            ...categoryFormData,
+            name: {
+                ...categoryFormData.name,
+                value: selectedCategory.name || '',
+            },
+            description: {
+                ...categoryFormData.description,
+                value: selectedCategory.description || '',
+            },
+        } as ICategoryFormConfig;
+
+        setisEditing(true);
+        setSelectedCategoryData(fieldDetails);
+        setCategoryFormDetails(fieldDetails);
+        setSelectedCateogryId(id);
+        setIsDialogOpen(true);
+    }
+
+    const isSaveDisabled = useMemo(() => {
+        if (isEditing) {
+            return JSON.stringify(selectedCategoryData) === JSON.stringify(categoryFormDetails);
+        } else {
+            false;
+        }
+    },[isEditing, categoryFormDetails, selectedCategoryData]) as boolean;
+
+    const renderCustomCell = (params: GridRenderCellParams, columnName: string) => {
+        switch (columnName){
+            case 'delete':
+                return (
+                    <Delete className="fill-current text-primaryBlue hover:text-text" onClick={() => onClickDeleteCategory(params.id as number)}/>
+                );
+            case 'edit':
+                return (
+                    <Edit className="fill-current text-primaryBlue hover:text-text" onClick={() => onClickEditCategory(params.id as number)}/>
+                )
+        }
+        
+    };
+
     const categoryColumns: GridColDef[] = [
+        { field: 'edit', headerName: '', renderCell: (params) => renderCustomCell(params, 'edit'), width: 5 },
+        { field: 'delete', headerName: '', renderCell: (params) => renderCustomCell(params, 'delete'), width: 5 },
         { field: 'id', headerName: 'Id', width: 70 },
         { field: "name", headerName: 'Category Name', width: 200 },
         { field: "description", headerName: 'Description', width: 500 }
@@ -102,8 +196,8 @@ const CategoriesContainer = () => {
             <EMSDialog
                 isDialogOpen={isDialogOpen}
                 onDialogClose={onDialogClose}
-                isLoading={isAddingCategory}
-                title={messages.createCategory}
+                isLoading={isAddingCategory || isEditingCategory}
+                title={isEditing ? messages.editCategory : messages.createCategory}
                 dialogContent={
                     <CategoryFormBuilder
                         formDetails={categoryFormDetails}
@@ -111,6 +205,14 @@ const CategoriesContainer = () => {
                     />
                 }
                 onSave={onSave}
+                isSaveDisabled={isSaveDisabled}
+            />
+            <EMSAlert
+                isDialogOpen={showAlert}
+                onDialogClose={() => setShowAlert(false)}
+                title={messages.confirmation}
+                message={alertMessage}
+                onConfirm={() => handleConfirmClick()}
             />
         </div>
     );
