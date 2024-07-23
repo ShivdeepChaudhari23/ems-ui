@@ -10,10 +10,9 @@ const tokenMiddleware = store => next => action => {
     if (action.type.startsWith('emsApiSlice/')) {
       const token = Cookies.get('token') as string;
       if (!validateToken(token)) {
-        console.log('#### DID ACTION STOP');
         store.dispatch({ type: 'authentication/resetToken' });
         Cookies.remove('token');
-        return; // Stop the action
+        return;
       }
     }
   

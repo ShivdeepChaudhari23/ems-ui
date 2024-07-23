@@ -14,29 +14,32 @@ const CategoryFormBuilder = ({
                 const { key, label, value, error, errorMessage, required = false} = fieldData
                 if (key === 'name') {
                     return (
-                        <TextInputField
+                        <div className="w-[240px]">
+                            <TextInputField
+                                label={label}
+                                error={error}
+                                fieldName={key}
+                                onChange={onChange}
+                                required={required}
+                                value={value}
+                                errorMessage={errorMessage}  
+                            />
+                        </div>
+                    )
+                }
+
+                return (
+                    <div className="w-[480px]">
+                        <TextAreaField
+                            value={value}
                             label={label}
                             error={error}
                             fieldName={key}
                             onChange={onChange}
                             required={required}
-                            value={value}
                             errorMessage={errorMessage}
-                            
                         />
-                    )
-                }
-
-                return (
-                    <TextAreaField
-                        value={value}
-                        label={label}
-                        error={error}
-                        fieldName={key}
-                        onChange={onChange}
-                        required={required}
-                        errorMessage={errorMessage}
-                    />
+                    </div>
                 );
             })}
         </div>

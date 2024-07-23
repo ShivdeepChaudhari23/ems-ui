@@ -16,7 +16,6 @@ const  Dashboard: React.FC<React.PropsWithChildren> = ({ children }) => {
    // Check Token Change and Log User out
   useEffect(() => {
     if (token === '') {
-      console.log('$$$$ PUSHING TO LOGIN');
       navigate('/', { replace: true });
     }
   }, [token]);
