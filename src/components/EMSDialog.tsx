@@ -38,7 +38,7 @@ const EMSDialog = ({
                         {showCloseButton && <Close/>}
                     </div>
                 </DialogTitle>
-                <DialogContent className="w-[39vw] h-[60vh] flex justify-between items-center">
+                <DialogContent className="flex justify-between items-center">
                     {dialogContent}
                 </DialogContent>
                 <DialogActions>

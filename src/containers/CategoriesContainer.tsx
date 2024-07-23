@@ -8,6 +8,7 @@ import { Category, CreateCategoryPayload, EditCategoryPayload, ICategoryFormConf
 import categoryFormData from "../Config/Categories";
 import CategoryFormBuilder from "../components/CategoryFormBuilder";
 import { Delete, Edit } from "@mui/icons-material";
+import { showToast } from "../Shared";
 
 const CategoriesContainer = () => {
     const { data, isLoading: isLoadingCategories } = useGetCategoriesListQuery();
@@ -69,9 +70,10 @@ const CategoriesContainer = () => {
 
                 if (response.message) {
                     // ToDo: Display a toast
+                    showToast('success', response.message)
                 }
             } catch (e) {
-                console.log('#### ERROR : %o ', e);
+                showToast('error', 'Something went wrong');
             } finally {
                 setCategoryFormDetails(categoryFormData);
                 setIsDialogOpen(false);
@@ -97,10 +99,11 @@ const CategoriesContainer = () => {
             const response = await deleteCategory({ categoryId: selectedCategoryId }).unwrap();
             if (response?.status === 'Success') {
                 // ToDo: Display Success Toast
+                showToast('success', 'Category deleted successfully');
             }
         } catch (e) {
             // ToDo: Display Error Toast
-            console.log('#### ERROR : %o', e)
+            showToast('error', 'Something went wrong');
         }
         setAlertMessage('');
         setShowAlert(false);
@@ -185,7 +188,6 @@ const CategoriesContainer = () => {
                         <DataGrid
                             columns={categoryColumns}
                             rows={categoryData}
-                            onRowClick={(params) => console.log('#### HERE : %o ', params)}
                         />
                     ) : (
                         <div>

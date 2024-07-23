@@ -7,6 +7,7 @@ import { LoginForm } from "../components";
 import { ILoginFormConfig, LoginPayload } from "../types";
 import { useAdminLoginMutation } from "../services";
 import { setToken } from "../slices/authenticationSlice";
+import { showToast } from "../Shared";
 
 
 const LoginContainer = () => {
@@ -29,10 +30,12 @@ const LoginContainer = () => {
                 const token = Cookies.get('token') as string;
                 dispatch(setToken(token));
                 navigate('/employees');
+            } else {
+                showToast('error', 'Please try again later');
             }
         } catch (e) {
             // Display Toast 
-            console.log('#### ERROR : %o', e);
+            showToast('error', e.data.error);
         }
     }
 

@@ -18,7 +18,8 @@ const TextInputField = ({
             onChange={(e) => onChange(fieldName, e.target.value)}
             label={label}
             required={required}
-            type=""
+            type="text"
+            className="w-full"
         />
         {error && <p className="!text-errorRed !text-[12px]">{errorMessage}</p>}
     </div>
