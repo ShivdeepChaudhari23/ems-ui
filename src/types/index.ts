@@ -15,12 +15,11 @@ import {
     EditCategoryResponse
 } from './Categories';
 import {
-    Employee,
-    GetEmployeesAPIResponse,
     LoginPayload,
     LoginResponse,
     ValidateSessionResponse,
 } from './Admin';
+import { Employee, GetEmployeesAPIResponse, DeleteEmployeeAPIResponse } from './Employees';
 
 export type {
     ITextAreaFieldProps,
@@ -43,4 +42,5 @@ export type {
     DeleteCategoryResponse,
     EditCategoryPayload,
     EditCategoryResponse,
+    DeleteEmployeeAPIResponse,
 };

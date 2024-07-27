@@ -1,5 +1,4 @@
 import {
-    useGetAllEmployeesQuery,
     useAdminLoginMutation, 
     useVerifyTokenQuery,
     useLazyVerifyTokenQuery
@@ -12,6 +11,8 @@ import {
     useEditCategoryMutation,
 } from './catogories/categoriesService';
 
+import { useDeletEmployeeMutation, useGetAllEmployeesQuery } from './employees/employeesService';
+
 export {
     useGetAllEmployeesQuery,
     useAdminLoginMutation, 
@@ -21,4 +22,5 @@ export {
     useAddCategoryMutation,
     useDeleteCategoryMutation,
     useEditCategoryMutation,
+    useDeletEmployeeMutation,
 };
