@@ -17,6 +17,7 @@ const emsApiSlice = createApi({
     endpoints: () => ({}),
     tagTypes: [
         'categories',
+        'employees',
     ],
 });
 

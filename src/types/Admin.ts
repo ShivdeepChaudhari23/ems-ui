@@ -1,16 +1,3 @@
-export interface Employee {
-    name: string;
-    email: string;
-    address: string;
-    salary: number;
-    category_id: number;
-}
-
-export interface GetEmployeesAPIResponse {
-    status: string;
-    result: Employee[];
-}
-
 export interface LoginPayload {
     username: string;
     password: string;
