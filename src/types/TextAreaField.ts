@@ -1,10 +1,10 @@
 export interface ITextAreaFieldProps {
     value: string;
-    error: boolean;
+    error?: boolean;
     errorMessage?: string;
     onChange: (key: string, value: string) => void;
     label: string;
-    required: boolean;
+    required?: boolean;
     fieldName: string;
     rowNum?: number;
 }

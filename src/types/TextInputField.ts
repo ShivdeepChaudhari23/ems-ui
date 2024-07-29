@@ -6,4 +6,5 @@ export interface ITextInputFieldProps {
     label: string;
     required: boolean;
     fieldName: string;
+    type?: string;
 }
