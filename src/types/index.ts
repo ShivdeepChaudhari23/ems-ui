@@ -19,7 +19,8 @@ import {
     LoginResponse,
     ValidateSessionResponse,
 } from './Admin';
-import { Employee, GetEmployeesAPIResponse, DeleteEmployeeAPIResponse } from './Employees';
+import { Employee, GetEmployeesAPIResponse, DeleteEmployeeAPIResponse, IEmployeeFormType, IEmployeeFieldType } from './Employees';
+import { IDropdownOption } from './DropdownField';
 
 export type {
     ITextAreaFieldProps,
@@ -43,4 +44,7 @@ export type {
     EditCategoryPayload,
     EditCategoryResponse,
     DeleteEmployeeAPIResponse,
+    IDropdownOption,
+    IEmployeeFormType,
+    IEmployeeFieldType,
 };

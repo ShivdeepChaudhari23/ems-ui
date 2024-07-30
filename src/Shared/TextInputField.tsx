@@ -8,7 +8,8 @@ const TextInputField = ({
     required,
     fieldName,
     onChange,
-    errorMessage = ''
+    errorMessage = '',
+    type = 'text',
 }: ITextInputFieldProps) => {
     return (
     <div className="!mb-8 w-full">
@@ -18,7 +19,7 @@ const TextInputField = ({
             onChange={(e) => onChange(fieldName, e.target.value)}
             label={label}
             required={required}
-            type="text"
+            type={type}
             className="w-full"
         />
         {error && <p className="!text-errorRed !text-[12px]">{errorMessage}</p>}

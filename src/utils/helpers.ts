@@ -45,4 +45,8 @@ const transformDate = (date: string) => {
 
 const getInitials = (fName: string, lName: string) => `${fName[0]}${lName[0]}`;
 
-export { validateToken, transformDate, getInitials };
+const transformOptions = (item: { id: number, name: string }) => {
+    const { id, name } = item;
+    return { id: `${id}`, value: name };
+}
+export { validateToken, transformDate, getInitials, transformOptions };

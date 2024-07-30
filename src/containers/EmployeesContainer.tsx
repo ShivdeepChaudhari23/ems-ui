@@ -1,21 +1,30 @@
 import { Button, CircularProgress, Avatar } from "@mui/material";
 import { messages } from "../utils/messages";
-import { useGetAllEmployeesQuery, useDeletEmployeeMutation } from "../services";
+import {
+    useGetAllEmployeesQuery,
+    useDeletEmployeeMutation,
+    useGetCategoriesListQuery
+} from "../services";
 import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { EMSAlert, EMSDialog } from "../components";
-import { Employee } from "../types";
+import { EMSAlert, EMSDialog, EmployeeFormBuilder } from "../components";
+import { Employee, IEmployeeFormType } from "../types";
 import { Delete, Edit } from "@mui/icons-material";
-import { getInitials, transformDate } from "../utils/helpers";
+import { getInitials, transformDate, transformOptions } from "../utils/helpers";
 import { showToast } from "../Shared";
+import { EMPLOYEE_FORM_DEFAULT_DATA } from "../Config/Employee";
 
 const EmployeesContainer = () => {
     const { data, isLoading: isLoadingCategories } = useGetAllEmployeesQuery();
+    const { data: categoriesData } = useGetCategoriesListQuery();
+
     const [deleteEmployee] = useDeletEmployeeMutation();
 
     const [allEmployeesData, setAllEmployeesData] = useState<Employee[]>([]);
     const [selectedEmployeeId, setSelectedEmployeedId] = useState(-99999);
     
+    const [employeeForm, setEmployeeForm] = useState<IEmployeeFormType>(EMPLOYEE_FORM_DEFAULT_DATA);
+
     const [alertMessage, setAlertMessage] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
@@ -27,6 +36,13 @@ const EmployeesContainer = () => {
         }
     }, [data, isLoadingCategories]);
 
+    useEffect(() => {
+        if (categoriesData?.results && categoriesData.results.length > 0) {
+            const categoryOptions = categoriesData.results.map(transformOptions);
+            setEmployeeForm((prev) => ({ ...prev, category: { ...prev.category, options: categoryOptions } }));
+        }
+    }, [categoriesData]);
+
     const onClickDeleteCategory = (id: number) => {
         const selectedEmployee = allEmployeesData.find((employee) => employee.id === id) as Employee;
         const { firstName, lastName } = selectedEmployee;
@@ -35,6 +51,15 @@ const EmployeesContainer = () => {
         setAlertMessage(alert);
         setShowAlert(true);
     }
+
+    const handleChange = (key: string, value: string | number, id?: string) => {
+        setEmployeeForm((prev) => {
+            const fieldData = prev[key as keyof IEmployeeFormType];
+            if (key === 'category' && id) return { ...prev, [key]: { ...fieldData, value, error: false, dropdownId: id } };
+
+            return { ...prev, [key]: { ...fieldData, value, error: false } }
+        })
+    };
 
     const onClickEditCategory = (id: number) => {
         // const selectedCategory = allEmployeesData.find((employee) => employee.id === id) as Category; 
@@ -78,8 +103,8 @@ const EmployeesContainer = () => {
         setSelectedEmployeedId(-9999);
         setisEditing(false);
     }
+
     const renderCustomCell = (params: GridRenderCellParams, columnName: string) => {
-        console.log('#### params : %o ', params);
         const { firstName, lastName, joiningDate, imageUrl } = params.row;
 
         switch (columnName){
@@ -151,8 +176,8 @@ const EmployeesContainer = () => {
                 isDialogOpen={isDialogOpen}
                 onDialogClose={() => setIsDialogOpen(false)}
                 isLoading={false}
-                title={isEditing ? messages.editCategory : messages.createCategory}
-                dialogContent={<></>}
+                title={isEditing ? messages.editCategory : messages.addEmployee}
+                dialogContent={<EmployeeFormBuilder formFields={employeeForm} onChange={handleChange}/>}
                 onSave={() => null}
                 isSaveDisabled={false}
             />

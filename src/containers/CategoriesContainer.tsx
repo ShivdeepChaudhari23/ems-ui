@@ -3,10 +3,9 @@ import { messages } from "../utils/messages";
 import { useAddCategoryMutation, useDeleteCategoryMutation, useEditCategoryMutation, useGetCategoriesListQuery } from "../services";
 import { useEffect, useMemo, useState } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { EMSAlert, EMSDialog } from "../components";
+import { EMSAlert, EMSDialog, CategoryFormBuilder } from "../components";
 import { Category, CreateCategoryPayload, EditCategoryPayload, ICategoryFormConfig } from "../types";
 import categoryFormData from "../Config/Categories";
-import CategoryFormBuilder from "../components/CategoryFormBuilder";
 import { Delete, Edit } from "@mui/icons-material";
 import { showToast } from "../Shared";
 
