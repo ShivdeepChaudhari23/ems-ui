@@ -46,6 +46,7 @@ const EMSDialog = ({
                         <Button
                             variant="outlined"
                             onClick={onDialogClose}
+                            className="!normal-case"
                         >
                             {messages.cancel}
                         </Button>
@@ -54,6 +55,7 @@ const EMSDialog = ({
                         variant="contained"
                         onClick={onSave}
                         disabled={isLoading || isSaveDisabled}
+                        className="!normal-case !bg-primaryBlue !color-text"
                     >
                         {messages.save}
                     </Button>

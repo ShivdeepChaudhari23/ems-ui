@@ -3,7 +3,8 @@ import { messages } from "../utils/messages";
 import {
     useGetAllEmployeesQuery,
     useDeletEmployeeMutation,
-    useGetCategoriesListQuery
+    useGetCategoriesListQuery,
+    useAddEmployeeMutation
 } from "../services";
 import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
@@ -18,6 +19,7 @@ const EmployeesContainer = () => {
     const { data, isLoading: isLoadingCategories } = useGetAllEmployeesQuery();
     const { data: categoriesData } = useGetCategoriesListQuery();
 
+    const  [addEmployee] = useAddEmployeeMutation();
     const [deleteEmployee] = useDeletEmployeeMutation();
 
     const [allEmployeesData, setAllEmployeesData] = useState<Employee[]>([]);
@@ -52,6 +54,20 @@ const EmployeesContainer = () => {
         setShowAlert(true);
     }
 
+    const isFormInvalid = () => {
+        let formData = employeeForm;
+        let isError = false;
+        
+        for (const key in formData) {
+            const fieldData = formData[key as keyof IEmployeeFormType];
+            const isFieldInvalid = !!fieldData.required && !fieldData.value;
+            formData = { ...formData, [key]: { ...fieldData, error: isFieldInvalid } };
+            isError = isError || isFieldInvalid;
+        }
+        setEmployeeForm(formData);
+        return isError;
+    };
+
     const handleChange = (key: string, value: string | number, id?: string) => {
         setEmployeeForm((prev) => {
             const fieldData = prev[key as keyof IEmployeeFormType];
@@ -61,6 +77,30 @@ const EmployeesContainer = () => {
         })
     };
 
+    const handleSubmit = async () => {
+        if (!isFormInvalid()) {
+            try {
+                const { firstName, lastName, emailAddress, address, pincode, joiningDate, category, salary } = employeeForm;
+                const payload = {
+                    firstName: firstName.value as string,
+                    lastName: lastName.value as string,
+                    salary: parseInt(salary.value as string),
+                    emailAddress: emailAddress.value as string,
+                    pincode: parseInt(pincode.value as string),
+                    joiningDate: new Date(joiningDate.value as string).getTime(),
+                    categoryId: parseInt(category.dropdownId as string),
+                    ...(address.value && { address: address.value as string }),
+                }
+                const response = await addEmployee(payload).unwrap();
+                if (response.status === 'Success' && response.message) {
+                    showToast('success', response.message);
+                }
+            } catch (e) {
+                showToast('error', e as string);
+            }
+            resetData();
+        }
+    };
     const onClickEditCategory = (id: number) => {
         // const selectedCategory = allEmployeesData.find((employee) => employee.id === id) as Category; 
         // const fieldDetails = {
@@ -100,8 +140,10 @@ const EmployeesContainer = () => {
     }
 
     const resetData = () => {
+        setEmployeeForm(EMPLOYEE_FORM_DEFAULT_DATA);
         setSelectedEmployeedId(-9999);
         setisEditing(false);
+        setIsDialogOpen(false);
     }
 
     const renderCustomCell = (params: GridRenderCellParams, columnName: string) => {
@@ -126,7 +168,7 @@ const EmployeesContainer = () => {
                 )
             case 'avatar':
                 return (
-                    <Avatar src={imageUrl} alt={getInitials(firstName, lastName)} className="mt-[4px] bg-primaryBlue"/>
+                    <Avatar src={imageUrl} alt={getInitials(firstName, lastName)} className="mt-[4px]" />
                 )
         }
         
@@ -174,11 +216,11 @@ const EmployeesContainer = () => {
             </div>
             <EMSDialog
                 isDialogOpen={isDialogOpen}
-                onDialogClose={() => setIsDialogOpen(false)}
+                onDialogClose={() => resetData()}
                 isLoading={false}
                 title={isEditing ? messages.editCategory : messages.addEmployee}
                 dialogContent={<EmployeeFormBuilder formFields={employeeForm} onChange={handleChange}/>}
-                onSave={() => null}
+                onSave={() => handleSubmit()}
                 isSaveDisabled={false}
             />
             <EMSAlert

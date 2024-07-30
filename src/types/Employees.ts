@@ -51,3 +51,21 @@ export interface IEmployeeFormType {
     phoneNumber: IEmployeeFieldType;
     category: IEmployeeFieldType;
 }
+
+export interface IAddEmployeePayload {
+    firstName: string;
+    lastName:  string;
+    address?: string;
+    salary: number;
+    emailAddress: string;
+    pincode: number;
+    joiningDate: number;
+    imageUrl?: string;
+    categoryId: number;
+}
+
+export interface IAddEmployeeAPIResponse {
+    error?: string;
+    message?: string;
+    status?: string;
+}

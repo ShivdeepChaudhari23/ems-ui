@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 
 interface IDatePickerFieldProps {
   label: string;
-  key: string;
+  fieldName: string;
   required?: boolean;
   error?: boolean;
   errorMessage?: string;
@@ -14,13 +14,13 @@ interface IDatePickerFieldProps {
   value: string;
 }
 
-const DatePickerField = ({ value, label, key, onChange }: IDatePickerFieldProps) => {
+const DatePickerField = ({ value, label, fieldName, onChange }: IDatePickerFieldProps) => {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={['DatePicker']}>
           <DatePicker
             label={label}
-            onChange={(e) => onChange(key, e?.toISOString() as string)}
+            onChange={(e) => onChange(fieldName, e?.toISOString() as string)}
             value={dayjs(value || (new Date().toISOString()))}  
           />
         </DemoContainer>

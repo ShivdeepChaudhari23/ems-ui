@@ -15,7 +15,7 @@ interface IEmployeeFormBuilderProps {
 const EmployeeFormBuilder = ({ formFields, onChange }: IEmployeeFormBuilderProps) => {
     const { firstName, lastName, emailAddress, salary, address, pincode, joiningDate, category, phoneNumber } = formFields;
     return (
-        <div className="m-2">
+        <div className="p-4">
             <div className="grid grid-cols-2 gap-2">
                 <TextInputField
                     label={firstName.label}
@@ -81,7 +81,7 @@ const EmployeeFormBuilder = ({ formFields, onChange }: IEmployeeFormBuilderProps
             </div>
             <div className="grid grid-cols-2 gap-2">
                 <DatePickerField
-                    key={joiningDate.key}
+                    fieldName={joiningDate.key}
                     label={joiningDate.label}
                     value={joiningDate.value as string}
                     onChange={onChange}
@@ -92,7 +92,7 @@ const EmployeeFormBuilder = ({ formFields, onChange }: IEmployeeFormBuilderProps
                 <DropdownField
                     fieldName={category.key}
                     options={category?.options || []}
-                    value={category.dropdownId || 'HEYEYEY'}
+                    value={category.dropdownId || ''}
                     label={category.label}
                     handleChange={onChange}
                     required={!!category.required}

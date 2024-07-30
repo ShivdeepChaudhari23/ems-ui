@@ -19,7 +19,7 @@ import {
     LoginResponse,
     ValidateSessionResponse,
 } from './Admin';
-import { Employee, GetEmployeesAPIResponse, DeleteEmployeeAPIResponse, IEmployeeFormType, IEmployeeFieldType } from './Employees';
+import { Employee, GetEmployeesAPIResponse, DeleteEmployeeAPIResponse, IEmployeeFormType, IEmployeeFieldType, IAddEmployeePayload, IAddEmployeeAPIResponse } from './Employees';
 import { IDropdownOption } from './DropdownField';
 
 export type {
@@ -47,4 +47,6 @@ export type {
     IDropdownOption,
     IEmployeeFormType,
     IEmployeeFieldType,
+    IAddEmployeePayload,
+    IAddEmployeeAPIResponse,
 };
