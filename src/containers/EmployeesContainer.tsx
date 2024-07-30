@@ -4,12 +4,13 @@ import {
     useGetAllEmployeesQuery,
     useDeletEmployeeMutation,
     useGetCategoriesListQuery,
-    useAddEmployeeMutation
+    useAddEmployeeMutation,
+    useEditEmployeeMutation
 } from "../services";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { EMSAlert, EMSDialog, EmployeeFormBuilder } from "../components";
-import { Employee, IEmployeeFormType } from "../types";
+import { Employee, IAddEmployeePayload, IEditEmployeePayload, IEmployeeFormType } from "../types";
 import { Delete, Edit } from "@mui/icons-material";
 import { getInitials, transformDate, transformOptions } from "../utils/helpers";
 import { showToast } from "../Shared";
@@ -20,13 +21,14 @@ const EmployeesContainer = () => {
     const { data: categoriesData } = useGetCategoriesListQuery();
 
     const  [addEmployee] = useAddEmployeeMutation();
+    const [editEmployee] = useEditEmployeeMutation();
     const [deleteEmployee] = useDeletEmployeeMutation();
 
     const [allEmployeesData, setAllEmployeesData] = useState<Employee[]>([]);
-    const [selectedEmployeeId, setSelectedEmployeedId] = useState(-99999);
+    const [selectedEmployeeId, setSelectedEmployeeId] = useState(-99999);
     
     const [employeeForm, setEmployeeForm] = useState<IEmployeeFormType>(EMPLOYEE_FORM_DEFAULT_DATA);
-
+    const [selectedEmployeeForm, setSelectedEmployeeForm] = useState<IEmployeeFormType>(EMPLOYEE_FORM_DEFAULT_DATA);
     const [alertMessage, setAlertMessage] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
@@ -45,11 +47,13 @@ const EmployeesContainer = () => {
         }
     }, [categoriesData]);
 
+    const isSaveDisabled = useMemo(() => isEditing && JSON.stringify(employeeForm) === JSON.stringify(selectedEmployeeForm), [selectedEmployeeForm, employeeForm, isEditing]);
+    
     const onClickDeleteCategory = (id: number) => {
         const selectedEmployee = allEmployeesData.find((employee) => employee.id === id) as Employee;
         const { firstName, lastName } = selectedEmployee;
         const alert = `Are you sure you want to delete the employee ${firstName} ${lastName}?`;
-        setSelectedEmployeedId(id);
+        setSelectedEmployeeId(id);
         setAlertMessage(alert);
         setShowAlert(true);
     }
@@ -73,26 +77,41 @@ const EmployeesContainer = () => {
             const fieldData = prev[key as keyof IEmployeeFormType];
             if (key === 'category' && id) return { ...prev, [key]: { ...fieldData, value, error: false, dropdownId: id } };
 
-            return { ...prev, [key]: { ...fieldData, value, error: false } }
+            return { ...prev, [key]: { ...fieldData, value: (['salary', 'pincode'].includes(key) ? parseInt(value as string) : value), error: false } }
         })
     };
 
     const handleSubmit = async () => {
         if (!isFormInvalid()) {
             try {
-                const { firstName, lastName, emailAddress, address, pincode, joiningDate, category, salary } = employeeForm;
-                const payload = {
-                    firstName: firstName.value as string,
-                    lastName: lastName.value as string,
-                    salary: parseInt(salary.value as string),
-                    emailAddress: emailAddress.value as string,
-                    pincode: parseInt(pincode.value as string),
-                    joiningDate: new Date(joiningDate.value as string).getTime(),
-                    categoryId: parseInt(category.dropdownId as string),
-                    ...(address.value && { address: address.value as string }),
+                let payload: IAddEmployeePayload | IEditEmployeePayload = {};
+                if (isEditing) {
+                    const { firstName, lastName, emailAddress, address, pincode, category, salary } = selectedEmployeeForm;
+                    payload = {
+                        employeeId: selectedEmployeeId.toString(),
+                        ...(firstName.value !== employeeForm.firstName.value && { firstName: employeeForm.firstName.value as string}),
+                        ...(lastName.value !== employeeForm.lastName.value && { lastName: employeeForm.lastName.value as string}),
+                        ...(emailAddress.value !== employeeForm.emailAddress.value && { emailAddress: employeeForm.emailAddress.value as string}),
+                        ...(address.value !== employeeForm.address.value && { emailAddress: employeeForm.address.value as string}),
+                        ...(pincode.value !== employeeForm.pincode.value && { pincode: parseInt(employeeForm.pincode.value as string)}),
+                        ...(category.dropdownId !== employeeForm.category.dropdownId && { categoryId: employeeForm.category.dropdownId}),
+                        ...(salary.value !== employeeForm.salary.value && { salary: parseInt(employeeForm.salary.value as string)}),
+                    }
+                } else {
+                    const { firstName, lastName, emailAddress, address, pincode, category, salary, joiningDate } = employeeForm;
+                    payload = {
+                        firstName: firstName.value as string,
+                        lastName: lastName.value as string,
+                        salary: parseInt(salary.value as string),
+                        emailAddress: emailAddress.value as string,
+                        pincode: parseInt(pincode.value as string),
+                        joiningDate: new Date(joiningDate.value as string).getTime(),
+                        categoryId: parseInt(category.dropdownId as string),
+                        ...(address.value && { address: address.value as string }),
+                    };
                 }
-                const response = await addEmployee(payload).unwrap();
-                if (response.status === 'Success' && response.message) {
+                const response = await (isEditing ? editEmployee(payload as IEditEmployeePayload) : addEmployee(payload as IAddEmployeePayload)).unwrap();
+                if (response.message) {
                     showToast('success', response.message);
                 }
             } catch (e) {
@@ -101,37 +120,62 @@ const EmployeesContainer = () => {
             resetData();
         }
     };
+
     const onClickEditCategory = (id: number) => {
-        // const selectedCategory = allEmployeesData.find((employee) => employee.id === id) as Category; 
-        // const fieldDetails = {
-        //     ...categoryFormData,
-        //     name: {
-        //         ...categoryFormData.name,
-        //         value: selectedCategory.name || '',
-        //     },
-        //     description: {
-        //         ...categoryFormData.description,
-        //         value: selectedCategory.description || '',
-        //     },
-        // } as ICategoryFormConfig;
+        const selectedEmployee = allEmployeesData.find((employee) => employee.id === id) as Employee; 
+        const { firstName, lastName, emailAddress, address = '', pincode, categoryId, categoryName, salary, joiningDate } = selectedEmployee;
+        const selectedEmployeeFormData = {
+            ...employeeForm,
+            firstName: {
+                ...employeeForm.firstName,
+                value: firstName,
+            },
+            lastName: {
+                ...employeeForm.lastName,
+                value: lastName,
+            },
+            emailAddress: {
+                ...employeeForm.emailAddress,
+                value: emailAddress,
+            },
+            address: {
+                ...employeeForm.address,
+                value: address || '',
+            },
+            pincode: {
+                ...employeeForm.pincode,
+                value: pincode,
+            },
+            category: {
+                ...employeeForm.category,
+                value: categoryName,
+                dropdownId: categoryId.toString(),
+            },
+            salary: {
+                ...employeeForm.salary,
+                value: salary,
+            },
+            joiningDate: {
+                ...employeeForm.joiningDate,
+                value: joiningDate,
+                disabled: true,
+            }
+        };
 
         setisEditing(true);
-        // setSelectedCategoryData(fieldDetails);
-        // setCategoryFormDetails(fieldDetails);
-        // setSelectedCateogryId(id);
-        // setIsDialogOpen(true);
-        onClickDeleteCategory(id);
+        setSelectedEmployeeForm(selectedEmployeeFormData);
+        setEmployeeForm(selectedEmployeeFormData);
+        setSelectedEmployeeId(id);
+        setIsDialogOpen(true);
     }
 
     const handleConfirmClick = async() => {
         try {
             const response = await deleteEmployee({ id: selectedEmployeeId.toString() }).unwrap();
             if (response?.status === 'Success') {
-                // ToDo: Display Success Toast
                 showToast('success', 'Category deleted successfully');
             }
         } catch (e) {
-            // ToDo: Display Error Toast
             showToast('error', 'Something went wrong');
         }
         setAlertMessage('');
@@ -140,8 +184,8 @@ const EmployeesContainer = () => {
     }
 
     const resetData = () => {
-        setEmployeeForm(EMPLOYEE_FORM_DEFAULT_DATA);
-        setSelectedEmployeedId(-9999);
+        setEmployeeForm((prev) => ({ ...EMPLOYEE_FORM_DEFAULT_DATA, category: { ...EMPLOYEE_FORM_DEFAULT_DATA.category, options: prev.category.options } }));
+        setSelectedEmployeeId(-9999);
         setisEditing(false);
         setIsDialogOpen(false);
     }
@@ -218,10 +262,10 @@ const EmployeesContainer = () => {
                 isDialogOpen={isDialogOpen}
                 onDialogClose={() => resetData()}
                 isLoading={false}
-                title={isEditing ? messages.editCategory : messages.addEmployee}
+                title={isEditing ? messages.editEmployee : messages.addEmployee}
                 dialogContent={<EmployeeFormBuilder formFields={employeeForm} onChange={handleChange}/>}
                 onSave={() => handleSubmit()}
-                isSaveDisabled={false}
+                isSaveDisabled={isSaveDisabled}
             />
             <EMSAlert
                 isDialogOpen={showAlert}

@@ -13,7 +13,6 @@ const  Dashboard: React.FC<React.PropsWithChildren> = ({ children }) => {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState('');
 
-   // Check Token Change and Log User out
   useEffect(() => {
     if (token === '') {
       navigate('/', { replace: true });

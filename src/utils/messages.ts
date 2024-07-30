@@ -13,4 +13,5 @@ export const messages = {
     editCategory: 'View/Edit Category',
     addEmployee: 'Add Employee',
     employees: 'Employees',
+    editEmployee: 'View/Edit Employee',
 };

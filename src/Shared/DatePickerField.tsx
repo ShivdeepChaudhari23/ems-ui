@@ -12,16 +12,18 @@ interface IDatePickerFieldProps {
   errorMessage?: string;
   onChange: (key: string, value: string) => void;
   value: string;
+  isDisabled?: boolean;
 }
 
-const DatePickerField = ({ value, label, fieldName, onChange }: IDatePickerFieldProps) => {
+const DatePickerField = ({ value, label, fieldName, onChange, isDisabled = false }: IDatePickerFieldProps) => {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={['DatePicker']}>
           <DatePicker
             label={label}
             onChange={(e) => onChange(fieldName, e?.toISOString() as string)}
-            value={dayjs(value || (new Date().toISOString()))}  
+            value={dayjs(value || (new Date().toISOString()))}
+            disabled={isDisabled}
           />
         </DemoContainer>
       </LocalizationProvider>

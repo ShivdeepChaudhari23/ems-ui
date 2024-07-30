@@ -37,6 +37,7 @@ export interface IEmployeeFieldType {
     type: 'date' | 'dropdown' | 'text' | 'number';
     options?: IDropdownOption[];
     dropdownId?: string;
+    disabled?: boolean;
 }
 
 export interface IEmployeeFormType {
@@ -68,4 +69,16 @@ export interface IAddEmployeeAPIResponse {
     error?: string;
     message?: string;
     status?: string;
+}
+
+export interface IEditEmployeePayload {
+    employeeId: string;
+    firstName?: string;
+    lastName?:  string;
+    address?: string;
+    salary?: number;
+    emailAddress?: string;
+    pincode?: number;
+    imageUrl?: string;
+    categoryId?: number;
 }

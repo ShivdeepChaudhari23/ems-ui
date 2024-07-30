@@ -52,6 +52,7 @@ export const EMPLOYEE_FORM_DEFAULT_DATA: IEmployeeFormType = {
         required: true,
         value: new Date().toISOString(),
         type: 'date',
+        disabled: false,
     },
     // imageUrl: {
     //     key: 'imageUrl',
@@ -85,7 +86,7 @@ export const EMPLOYEE_FORM_DEFAULT_DATA: IEmployeeFormType = {
         label: 'Contact Number',
         error: false,
         errorMessage: 'Please provide contact number',
-        required: true,
+        required: false,
         value: '',
         type: 'number',
     },

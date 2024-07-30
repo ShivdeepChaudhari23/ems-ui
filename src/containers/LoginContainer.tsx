@@ -34,7 +34,6 @@ const LoginContainer = () => {
                 showToast('error', 'Please try again later');
             }
         } catch (e) {
-            // Display Toast 
             showToast('error', e.data.error);
         }
     }

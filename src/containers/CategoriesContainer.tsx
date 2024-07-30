@@ -68,7 +68,6 @@ const CategoriesContainer = () => {
                 const response = await (isEditing ? editCategory(payload as EditCategoryPayload) : addCategory(payload as CreateCategoryPayload)).unwrap();
 
                 if (response.message) {
-                    // ToDo: Display a toast
                     showToast('success', response.message)
                 }
             } catch (e) {
@@ -97,11 +96,9 @@ const CategoriesContainer = () => {
         try {
             const response = await deleteCategory({ categoryId: selectedCategoryId }).unwrap();
             if (response?.status === 'Success') {
-                // ToDo: Display Success Toast
                 showToast('success', 'Category deleted successfully');
             }
         } catch (e) {
-            // ToDo: Display Error Toast
             showToast('error', 'Something went wrong');
         }
         setAlertMessage('');

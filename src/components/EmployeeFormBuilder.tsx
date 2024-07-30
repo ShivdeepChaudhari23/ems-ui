@@ -88,6 +88,7 @@ const EmployeeFormBuilder = ({ formFields, onChange }: IEmployeeFormBuilderProps
                     required={joiningDate.required}
                     error={joiningDate.error}
                     errorMessage={joiningDate.errorMessage}
+                    isDisabled={joiningDate.disabled}
                 />
                 <DropdownField
                     fieldName={category.key}
