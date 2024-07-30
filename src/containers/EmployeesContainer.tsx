@@ -96,7 +96,7 @@ const EmployeesContainer = () => {
                     showToast('success', response.message);
                 }
             } catch (e) {
-                showToast('error', e as string);
+                showToast('error', e.data.error as string);
             }
             resetData();
         }
