@@ -20,7 +20,7 @@ const DropdownField = ({ options, value, label, fieldName, required = false, err
         if (selectedOption) handleChange(fieldName, selectedOption.value, selectedOption.id);
     }
     return (
-        <>
+        <span className="w-full">
             <TextField
                 label={label}
                 value={value}
@@ -29,7 +29,7 @@ const DropdownField = ({ options, value, label, fieldName, required = false, err
                 required={required}
                 error={error}
                 select
-                className="!mt-2"
+                className="!mt-2 !w-full"
             >
                 {options.map(({ id, value }, index) => {
                     return (
@@ -38,7 +38,7 @@ const DropdownField = ({ options, value, label, fieldName, required = false, err
                 })}
             </TextField>
             {error && <p className="!text-errorRed !text-[12px]">{errorMessage}</p>}
-        </>
+        </span>
     );
 };
 

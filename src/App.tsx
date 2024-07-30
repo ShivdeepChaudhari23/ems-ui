@@ -1,6 +1,6 @@
 import './App.css';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-// import { ComingSoon } from './components';
+import { ComingSoon } from './components';
 import { CategoriesContainer, Dashboard, EmployeesContainer, LoginContainer } from './containers';
 import { ReactNode, useEffect } from 'react';
 import Cookies from 'js-cookie';
@@ -37,6 +37,7 @@ const App = () => {
         <Route path='/' element={<LoginContainer />}/>
         <Route path='/employees' element={getDashbaordWrapper(<EmployeesContainer />)} />
         <Route path='/categories' element={getDashbaordWrapper(<CategoriesContainer />)} />
+        <Route path='/roles' element={getDashbaordWrapper(<ComingSoon />)}/>
       </Routes>
     </>
   );

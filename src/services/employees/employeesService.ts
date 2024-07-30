@@ -1,4 +1,4 @@
-import { DeleteEmployeeAPIResponse, GetEmployeesAPIResponse } from "../../types";
+import { DeleteEmployeeAPIResponse, GetEmployeesAPIResponse, IAddEmployeeAPIResponse, IAddEmployeePayload } from "../../types";
 import { API_ENDPOINTS } from "../apiEndpoints";
 import emsApiSlice from "../slice";
 
@@ -16,7 +16,16 @@ const adminService = emsApiSlice.injectEndpoints({
             }),
             invalidatesTags: ['employees'],
         }),
+
+        addEmployee: builder.mutation<IAddEmployeeAPIResponse, IAddEmployeePayload>({
+            query: (payload) => ({
+                url: API_ENDPOINTS.employees.addEmployee,
+                method: 'POST',
+                body: payload,
+            }),
+            invalidatesTags: ['employees'],
+        }),
     })
 });
 
-export const { useGetAllEmployeesQuery, useDeletEmployeeMutation } = adminService;
+export const { useGetAllEmployeesQuery, useDeletEmployeeMutation, useAddEmployeeMutation } = adminService;

@@ -12,5 +12,6 @@ export const API_ENDPOINTS = {
     employees: {
         getAllEmployees: '/admin/employees',
         deleteEmployee: (employeeId: string) => `admin/employee/${employeeId}`,
+        addEmployee: '/admin/add-employee',
     }
 }

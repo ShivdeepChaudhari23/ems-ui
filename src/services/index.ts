@@ -11,7 +11,7 @@ import {
     useEditCategoryMutation,
 } from './catogories/categoriesService';
 
-import { useDeletEmployeeMutation, useGetAllEmployeesQuery } from './employees/employeesService';
+import { useAddEmployeeMutation, useDeletEmployeeMutation, useGetAllEmployeesQuery } from './employees/employeesService';
 
 export {
     useGetAllEmployeesQuery,
@@ -23,4 +23,5 @@ export {
     useDeleteCategoryMutation,
     useEditCategoryMutation,
     useDeletEmployeeMutation,
+    useAddEmployeeMutation,
 };
