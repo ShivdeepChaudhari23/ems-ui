@@ -6,6 +6,7 @@ import {
     TextInputField
 } from "../Shared";
 import { IEmployeeFormType } from "../types";
+import ImageUploader from "./ImageUploader";
 
 interface IEmployeeFormBuilderProps {
     formFields: IEmployeeFormType;
@@ -15,7 +16,10 @@ interface IEmployeeFormBuilderProps {
 const EmployeeFormBuilder = ({ formFields, onChange }: IEmployeeFormBuilderProps) => {
     const { firstName, lastName, emailAddress, salary, address, pincode, joiningDate, category, phoneNumber } = formFields;
     return (
-        <div className="p-4">
+        <div className="mt-36 px-6">
+            <div className="flex justify-center">
+                <ImageUploader imageUrl="" />
+            </div>
             <div className="grid grid-cols-2 gap-2">
                 <TextInputField
                     label={firstName.label}

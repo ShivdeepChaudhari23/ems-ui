@@ -14,4 +14,5 @@ export const messages = {
     addEmployee: 'Add Employee',
     employees: 'Employees',
     editEmployee: 'View/Edit Employee',
+    imageUpload: (isSelected: boolean) => `${isSelected ? 'Change Image' : 'Select Image'}` 
 };
